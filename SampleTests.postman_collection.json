@@ -1,0 +1,595 @@
+{
+	"info": {
+		"_postman_id": "0bb9bac8-4050-4a1e-8934-3d8d258b8246",
+		"name": "SampleTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3295065"
+	},
+	"item": [
+		{
+			"name": "createUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 201\", function () {",
+							"    pm.expect(pm.response.code).to.equal(201);",
+							"});",
+							"pm.collectionVariables.set(\"createdId\",pm.response.json().id)",
+							"pm.test(\"Response body contains the correct fields\", function () { ",
+							"    const responseData = pm.response.json();  ",
+							"    pm.expect(responseData).to.have.property(\"data\");",
+							"    if (responseData.data) {",
+							"        pm.expect(responseData.data).to.have.property(\"email\");",
+							"        pm.expect(responseData.data).to.have.property(\"first_name\");",
+							"        pm.expect(responseData.data).to.have.property(\"last_name\");",
+							"        pm.expect(responseData.data).to.have.property(\"avatar\");",
+							"    }",
+							"    pm.expect(responseData).to.have.property(\"support\");",
+							"    if (responseData.support) {",
+							"        pm.expect(responseData.support).to.have.property(\"url\");",
+							"        pm.expect(responseData.support).to.have.property(\"text\");",
+							"    }",
+							"",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var randomString = Math.random().toString(36).substring(5)",
+							"var randomFirstname = Math.random().toString(36).substring(4)",
+							"var randomLastname = Math.random().toString(36).substring(6)",
+							"var randomNumber = Math.floor(Math.random()*10000)",
+							"console.log(randomString)",
+							"console.log(randomNumber)",
+							"pm.environment.set(\"randomemail\", randomString+\"@gmail.com\")",
+							"pm.environment.set(\"randomfirstname\", randomFirstname)",
+							"pm.environment.set(\"randomLastname\", randomLastname)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "x-api-key",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "reqres-free-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"email\": \"{{randomemail}}\",\n        \"first_name\": \"{{randomfirstname}}\",\n        \"last_name\": \"{{randomLastname}}\",\n        \"avatar\": \"https://reqres.in/img/faces/7-image.jpg\"\n    },\n    \"support\": {\n        \"url\": \"https://contentcaddy.io?utm_source=reqres&utm_medium=json&utm_campaign=referral\",\n        \"text\": \"Tired of writing endless social media content? Let Content Caddy generate it for you.\"\n    }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"pm.test(\"Response body contains the correct fields\", function () { ",
+							"    const responseData = pm.response.json();  ",
+							"    ",
+							"    // Check for properties in the data object",
+							"    pm.expect(responseData).to.have.property(\"data\");",
+							"    if (responseData.data) {",
+							"        pm.expect(responseData.data).to.have.property(\"email\");",
+							"        pm.expect(responseData.data).to.have.property(\"first_name\");",
+							"        pm.expect(responseData.data).to.have.property(\"last_name\");",
+							"        pm.expect(responseData.data).to.have.property(\"avatar\");",
+							"    }",
+							"",
+							"    // Check for properties in the support object",
+							"    pm.expect(responseData).to.have.property(\"support\");",
+							"    if (responseData.support) {",
+							"        pm.expect(responseData.support).to.have.property(\"url\");",
+							"        pm.expect(responseData.support).to.have.property(\"text\");",
+							"    }",
+							"",
+							"    // Check for the id property",
+							"    pm.expect(responseData).to.have.property(\"id\").that.is.a('number').and.to.eql(pm.environment.get(\"createdId\"));",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "x-api-key",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "reqres-free-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users/{{createdId}}",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{createdId}}"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PutUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var moment = require('moment');",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"Response body contains the correct data\", function () {   ",
+							"    const responseData = pm.response.json(); ",
+							"    let updatedAtMinute = moment.utc(responseData.updatedAt).format(\"YYYY-MM-DDTHH:mm\");",
+							"    let nowMinute = moment.utc().format(\"YYYY-MM-DDTHH:mm\");    ",
+							"    if (responseData.data) {",
+							"        pm.expect(responseData.data).to.have.property(\"email\").that.equals(\"test@reqres.in\");",
+							"        pm.expect(responseData.data).to.have.property(\"first_name\").that.equals(\"TestFirstname\");",
+							"        pm.expect(responseData.data).to.have.property(\"last_name\").that.equals(\"TestLastname\");",
+							"        pm.expect(updatedAtMinute).to.eql(nowMinute);",
+							"        pm.expect(responseData.data).to.have.property(\"avatar\").that.equals(\"https://reqres.in/img/faces/7-image.jpg\");",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "x-api-key",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "reqres-free-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"email\": \"test@reqres.in\",\n        \"first_name\": \"TestFirstname\",\n        \"last_name\": \"TestLastname\",\n        \"avatar\": \"https://reqres.in/img/faces/7-image.jpg\"\n    },\n    \"support\": {\n        \"url\": \"https://contentcaddy.io?utm_source=reqres&utm_medium=json&utm_campaign=referral\",\n        \"text\": \"Tired of writing endless social media content? Let Content Caddy generate it for you.\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users/{{createdId}}",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{createdId}}"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "x-api-key",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "reqres-free-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users/94",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users",
+						"94"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUsers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const Ajv = require('ajv');",
+							"const ajv = new Ajv();",
+							"",
+							"// Get schema from collection variable",
+							"const schema = JSON.parse(pm.collectionVariables.get(\"jsonSchema\"));",
+							"",
+							"// Get response JSON",
+							"const data = pm.response.json();",
+							"",
+							"// Validate",
+							"const validate = ajv.compile(schema);",
+							"console.log(validate)",
+							"const valid = validate(data);",
+							"console.log(valid)",
+							"console.log(validate.errors);",
+							"if (!valid) {",
+							"  console.log(validate.errors);",
+							"}",
+							"pm.test(\"Response status code is 200 and its GET request\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"    pm.expect(pm.request.method).to.eql(\"GET\");",
+							"});",
+							"pm.test(\"Check the content type header\",function(){",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");",
+							"})",
+							"",
+							"pm.test(\"Check the response Id\", function () {",
+							"    var response = pm.response.json();",
+							"   ",
+							"    console.log(response);",
+							"    response.data.forEach((id) => {",
+							"        pm.expect(id).to.not.be.null;",
+							"    });",
+							"    //pm.expect(ajv.validate(data, response)).to.be.true; // Corrected the order of parameters",
+							"})",
+							"pm.test(\"Check the response\", function () {",
+							"    var response = pm.response.json();",
+							"    response.data.forEach((data)=>{",
+							"        pm.expect(data).to.have.keys(\"id\",\"email\",\"first_name\",\"last_name\",\"avatar\")",
+							"    })",
+							"})",
+							"pm.test(\"Check its valid email\", function () {",
+							"    var response = pm.response.json();",
+							"    console.log(response.data);",
+							"    response.data.forEach((user)=>{",
+							"        pm.expect(user.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/,\"Invalid email\");",
+							"    });",
+							"});",
+							"pm.test(\"Check its valid email\", function () {",
+							"    var response = pm.response.json();",
+							"    console.log(response.data);",
+							"    response.data.forEach((user)=>{",
+							"        pm.expect(user.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/,\"Invalid email\");",
+							"    });",
+							"});",
+							"pm.test(\"Check if all users have emaild\", function () {",
+							"     ",
+							"    var response = pm.response.json();",
+							"    console.log(response.data);",
+							"    response.data.forEach((user)=>{",
+							"        pm.expect(user).to.not.have.property('error');",
+							"        pm.expect(user).to.have.property('email').that.is.a('string').and.to.have.lengthOf.at.least(1, \"Status should not be empty\");",
+							"    });",
+							"});",
+							"pm.test(\"Check if id is unique and not null or undefined\", function () {",
+							"    var responseData = pm.response.json();",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.data).to.be.an('array'); // Check if data is an array",
+							"    const ids = responseData.data.map(user => user.id);",
+							"    responseData.data.forEach((user) => {",
+							"    const hasNonEmptyFieldId = Object.values(user).every(value => value !== undefined && value !== \"\" && value!==null);",
+							"   // pm.expect(ids).to.satisfy(arr => arr.every(id => id !== null && id !== undefined), \"IDs should not be null or undefined\");",
+							"    pm.expect(hasNonEmptyFieldId).to.be.true;",
+							"    })",
+							"    const uniqueid = new Set(ids);",
+							"    pm.expect(uniqueid.size).to.equal(ids.length, \"All ids are not unique\");",
+							"});",
+							"pm.test(\"Check if each values in data has some non empty field\", function () {",
+							"    var responseData = pm.response.json();",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    responseData.data.forEach((user) => {",
+							"        const hasNonEmptyField = Object.values(user).some(value => value !== \"\");",
+							"        pm.expect(hasNonEmptyField).to.be.true;",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Check schema\", function () {",
+							"pm.expect(valid, JSON.stringify(validate.errors)).to.be.true;",
+							"})",
+							"",
+							"pm.test(\"Check for presence of 'Ratelimit-Remaining' header and ensure it is a non-negative integer\", function () {",
+							"    pm.expect(pm.response.headers.has('Ratelimit-Remaining')).to.be.true;",
+							"    const rateLimitRemaining = parseInt(pm.response.headers.get('Ratelimit-Remaining'), 10);",
+							"    pm.expect(rateLimitRemaining).to.be.a('number').and.to.be.at.least(0);",
+							"});",
+							"",
+							"pm.test(\"Response includes pagination information\", function () {",
+							"    var responseData = pm.response.json();",
+							"    pm.expect(responseData).to.have.property('page').that.is.greaterThan(0);",
+							"    pm.expect(responseData).to.have.property('per_page').that.is.greaterThan(0); ",
+							"    pm.expect(responseData).to.have.property('total').that.is.greaterThan(0);",
+							"    pm.expect(responseData).to.have.property('total_pages').that.is.greaterThan(0);",
+							"})",
+							"",
+							"pm.test(\"Test if id is sorted in ascending order\", function () {",
+							"    var responseData = pm.response.json();",
+							"    const sortedData = [...responseData.data].sort((a, b) => a.id - b.id);",
+							"    pm.expect(responseData.data).to.deep.equal(sortedData, \"Response data is not sorted by 'id'\");",
+							"})",
+							"",
+							"pm.test(\"Data per page\", function () {",
+							"    var responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.per_page).to.eql(6, \"Response data is not displayed correctly per page'\");",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "reqres-free-v1",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "x-api-key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "jsonSchema",
+			"value": ""
+		},
+		{
+			"key": "createdId",
+			"value": ""
+		},
+		{
+			"key": "allIds",
+			"value": ""
+		},
+		{
+			"key": "page",
+			"value": ""
+		}
+	]
+}
